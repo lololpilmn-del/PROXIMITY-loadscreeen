@@ -1,25 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <style>
-        body {
-            background: black;
+        * {
             margin: 0;
-            overflow: hidden;
+            padding: 0;
         }
-        video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+        }
+        #myVideo {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
-    <video autoplay loop muted playsinline>
+
+    <video id="myVideo" autoplay loop muted playsinline preload="auto">
+        <source src="loading.webm" type="video/webm">
         <source src="loading.mp4" type="video/mp4">
     </video>
+
+    <script>
+        // Принудительно запускаем видео при загрузке внутри GMod
+        document.addEventListener("DOMContentLoaded", function() {
+            var video = document.getElementById("myVideo");
+            video.muted = true; // Убеждаемся, что звук выключен
+            var promise = video.play();
+            
+            if (promise !== undefined) {
+                promise.catch(function(error) {
+                    // Если браузер заблокировал запуск, пробуем еще раз через 0.5сек
+                    setTimeout(function() {
+                        video.play();
+                    }, 500);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
